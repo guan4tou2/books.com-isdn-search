@@ -22,9 +22,9 @@ with open('input.csv', 'r', encoding='utf-8', newline='') as csvfile:
         user_input = ''.join(isbn).strip()
 
         base_api_link = "https://www.kingstone.com.tw/search/key/"
-        base_api_link_post = '/dis/list/zone/book'
+        base_api_link_end = '/dis/list/zone/book'
         print(user_input)
-        with urllib.request.urlopen(base_api_link + user_input+base_api_link_post) as f:   
+        with urllib.request.urlopen(base_api_link + user_input+base_api_link_end) as f:   
             text = f.read()
         soup = BeautifulSoup(text, 'html.parser')
         
@@ -56,17 +56,9 @@ with open('input.csv', 'r', encoding='utf-8', newline='') as csvfile:
             publisher_regex = r"出版社： (\w*)\s* 追蹤出版社"
             publishedDate_regex = r"出版日：(\d+\/\d+\/\d+)"
 
-            authors = re.search(authors_regex, Data)
-            if authors != None:
-                authors = re.search(authors_regex, Data).group(1)
-
-            publisher = re.search(publisher_regex, Data)
-            if publisher != None:
-                publisher = re.search(publisher_regex, Data).group(1)
-
-            publishedDate = re.search(publishedDate_regex, Data)
-            if publishedDate != None:
-                publishedDate = re.search(publishedDate_regex, Data).group(1)
+            authors = re.search(authors_regex, Data) if authors!=None else re.search(authors_regex, Data).group(1)
+            publisher = re.search(publisher_regex, Data) if publisher != None else re.search(publisher_regex, Data).group(1)
+            publishedDate = re.search(publishedDate_regex, Data) if publishedDate != None else re.search(publishedDate_regex, Data).group(1)
 
             # print("\nTitle:", title)
             # print("\nSummary:")
@@ -79,5 +71,4 @@ with open('input.csv', 'r', encoding='utf-8', newline='') as csvfile:
 
             with open('./output.csv', 'a', encoding='utf-8', newline='') as csvfile:
                 writer = csv.writer(csvfile)
-                writer.writerow([title, '[img]'+image+'[/img]', price, authors,
-                                publishedDate, publisher, user_input])
+                writer.writerow([title, '[img]'+image+'[/img]', price, authors,publishedDate, publisher, user_input])
